@@ -18,7 +18,7 @@
 
     const app = express();
 
-    //console.log(process.env.API);
+    // console.log(process.env.API);
 
     app.use(express.static("public"));
     app.set('view engine', 'ejs');
