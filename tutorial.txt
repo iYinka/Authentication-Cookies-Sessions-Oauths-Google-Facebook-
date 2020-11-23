@@ -1,0 +1,117 @@
+BUILDING SECURITY
+
+LEVEL 1: To Create user account(USERNAME & PASSWORD)
+        -Create User Database using mongodb and mongoose.
+        -In Authentication directory;
+            -Run npm i mongoose(since mongodb is already on the system)
+            -Require mongoose in app.js
+
+
+LEVEL 2: (i) ENCRYPTION
+              -check mongoose-encryption(this npm package can encrypt and authenticate either or both can be used)
+              -Run i mongoose-encryption
+              -Require mongoose-encryption in app.js
+              -Create new mongoose.Schema
+              -Create secret string. See app.js
+
+        (ii) ADD ENVIRONMENT VARS(.ENV)
+              -Run npm i dotenv
+              -REQUIRE AS EARLY AS POSSIBLE(it can be the first package required in app.js) not using const
+              -Create .env file in the root directory
+              -Add environment variables in the .env file WITH NO SPACES or : ; , "" ''
+              -Create .gitignore to hide files from commit during git upload(copy and paste the
+              template from https://github.com/github/gitignore/blob/master/Node.gitignore into the .gitignore file).
+
+
+LEVEL 3: HASHING WITH md5 (NOTE: ENCRYPTION is not needed hence mongoose-encryption and userSchema.plugin are commented out)
+      -Run npm i md5
+      -Require md5 to hash the particular field
+
+
+LEVEL 4: HASHING AND SALTING WITH BCRYPT
+      -md5 is no longer needed so remove or comment it out.
+      -Run npm i bcrypt  (for a specific version run npm i bcrypt@version e.g npm i bcrypt@3.0.2)
+      -If node version is not the stable one(i.e recommended) thereby not installing the compatible bcrypt version. To update
+          -Run curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+          -Restart terminal and run nvm --version
+          -Check the nodejs.org to download the version recommended
+              -Run nvm install 12.18.4 (in the root directory) for nodejs installation
+
+                    THEN AGAIN
+      -Run npm i bcrypt  (for a specific version run npm i bcrypt@version e.g npm i bcrypt@3.0.2)
+      -Require bcrypt
+      -Create const saltRounds immediately after required bcrypt (salt rounds is the number of times to make hash generating hard for hackers)
+
+
+LEVEL 5: COOKIES AND SESSIONS(including hashing and bcrypt using the passport.js packages below)
+      -Run npm install the packages below in the Authentication directory
+          -passport
+          -passport-local
+          -passport-local-mongoose
+          -express-session (note that it is NOT express-sessions)
+      -bcrypt and hash in LEVEL 4 can be removed or commented out
+      -REQUIRE THE PACKAGES STRICTLY IN THE ORDER BELOW(see Authentication/app.js for more details)
+          -const session = require('express-session');
+          -const passport = require('passport');
+          -const passportLocalMongoose = require('passport-local-mongoose');
+
+
+
+
+LEVEL 6: GOOGLE AUTH 2.0 Authentication
+      -OAuth i.e Open Authorisation helps to manage the security levels
+            -GOOGLE
+            -Facebook
+            -LinkedIn
+            -Twitter  
+      WHY OAUTH????
+            It allows for:
+            1. GRANULAR ACCESS LEVELS i.e when a user logs in with Facebook, you can request for 
+               specifics like emails, usernames, list of friends and etc
+            
+            2. READ ONLY or READ+WRITE ACCESS i.e request for emails, username etc or if WordPress
+               is to post to their Facebook accounts
+            
+            3. REVOKE ACCESS i.e users can deauthorize from the third party client
+
+      STEPS TO OAUTH:
+            1. SET UP YOUR APP in Facebook's developer console to get a AppID or ClientID
+            2. REDIRECT TO AUTHENTICATE
+            3. USER LOGS IN to facebook, google etc
+            4. USER GRANTS PERMISSIONS (...Continue as + AppName)
+            5. RECIEVE AUTHORIZATION CODE from third 3rd party i.e Facebook, Google etc
+            6. EXCHANGE AUTHCODE FOR ACCESS TOKEN(involves sending AuthCode our App to receive Token 
+               from say Facebook so as to use token to request info of User from the 3rd party).
+               AuthCode is ONE USE only while Access Token gives room for multiple grants of permissions.
+            
+IMPLEMENTATION and INSTALLATION
+      -SELECT passport-google-oauth20  (which is currently the latest) from passportjs.org
+      -Run and require:
+            1. npm install passport-google-oauth20  (passport-facebook  for FacebookOauth)  in the directory.
+            2. npm install mongoose-findorcreate and also check the plugin for findorcreate(in app.js).
+
+      -Create an Application by clicking on the Google Developer Console link in the passport-google-oauth20
+      on passportjs.org
+
+      -IN GOOGLE DEVELOPER CONSOLE
+            -Click Create or Select a project
+            -Click on New Project
+            -Give the Project a Name e.g Authentication 
+            -Click on Credentials
+            -Click OAuth consent screen(to fill in what the User sees including AppLogo)
+            -Leave Scopes for Google APIs with the defaults or add more if needed
+            -Click on Create credentials to create API(choose OAuth client ID)
+                  -Choose App type maybe webApp, iOS etc giving name to the App
+            -For Authorized JavaScript origins
+                  -http://localhost:3000 for testing locally
+                  -put in the new url when deployed
+            -For Authorized redirect URIs
+                  http://localhost:3000/auth/google/Authentication
+            -OAuth client pops up; copy the client ID and client secret into the .env file
+
+FOR SOME BUTTON STYLING FOR GOOGLE, Facebook etc
+-Go to https://lipis.github.io/bootstrap-social/
+-Click on Download
+-Drag bootstrap-social.css into public
+-Link in the views/partials/header 
+-The class names are on the link above
