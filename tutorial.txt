@@ -115,3 +115,10 @@ FOR SOME BUTTON STYLING FOR GOOGLE, Facebook etc
 -Drag bootstrap-social.css into public
 -Link in the views/partials/header 
 -The class names are on the link above
+
+
+
+
+
+
+mongodb://localhost:27017/mernDB
